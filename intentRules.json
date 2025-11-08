@@ -1,0 +1,8 @@
+{
+  "google_calendar": ["meeting", "schedule", "calendar", "free", "busy"],
+  "aws_monitor": ["server", "instance", "status", "deployment", "aws", "error", "uptime"],
+  "notion_docs": ["note", "decision", "project", "document", "summary"],
+  "github_repo": ["pull request", "repo", "commit", "issue"],
+  "stripe_finance": ["payment", "invoice", "balance", "transaction"],
+  "fitbit_health": ["fitness", "steps", "sleep", "heart rate", "workout"]
+}

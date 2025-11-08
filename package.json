@@ -1,0 +1,19 @@
+{
+  "name": "datathon_mcp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server_automated.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "openai": "^6.8.1"
+  }
+}
