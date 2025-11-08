@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
+import { getAuthUrl, getAccessToken, authorize, getUpcomingEvents } from "./googleCalendarHelper.js";
+
 
 dotenv.config();
 
@@ -93,21 +95,53 @@ async function analyzeIntent(query) {
 // 5️⃣  Mock connector fetchers (replace with real APIs later)
 // --------------------------------------------------
 async function fetchConnector(connector, user_id, query, timeHint) {
-  // Simulated context responses
-  const data = {
-    google_calendar: `Checked calendar for ${timeHint || "upcoming"} meetings.`,
-    aws_monitor: "Fetched server health metrics from AWS.",
-    notion_docs: "Retrieved recent meeting notes and project updates.",
-    github_repo: "Fetched latest pull requests and commits.",
-    stripe_finance: "Fetched balance and transaction summaries.",
-    fitbit_health: "Fetched recent step count and sleep stats.",
-    semantic_search: "Performed general semantic search for context.",
-  };
+  try {
+    if (connector === "google_calendar") {
+      const auth = await authorize();
+      const events = await getUpcomingEvents(auth);
 
-  return {
-    connector,
-    summary: data[connector] || "No data available",
-  };
+      if (!events.length) {
+        return {
+          connector,
+          summary: "No upcoming meetings found in your calendar.",
+        };
+      }
+
+      // Format top events into a string
+      const eventSummary = events
+        .map((e) => {
+          const start = e.start.dateTime || e.start.date;
+          return `${e.summary || "No title"} at ${start}`;
+        })
+        .join("; ");
+
+      return {
+        connector,
+        summary: `Upcoming meetings: ${eventSummary}`,
+      };
+    }
+
+    // Default simulated responses for other connectors
+    const data = {
+      aws_monitor: "Fetched server health metrics from AWS.",
+      notion_docs: "Retrieved recent meeting notes and project updates.",
+      github_repo: "Fetched latest pull requests and commits.",
+      stripe_finance: "Fetched balance and transaction summaries.",
+      fitbit_health: "Fetched recent step count and sleep stats.",
+      semantic_search: "Performed general semantic search for context.",
+    };
+
+    return {
+      connector,
+      summary: data[connector] || "No data available",
+    };
+  } catch (error) {
+    console.error(`Error fetching ${connector}:`, error.message);
+    return {
+      connector,
+      summary: `Failed to fetch data for ${connector}: ${error.message}`,
+    };
+  }
 }
 
 // --------------------------------------------------
@@ -156,4 +190,17 @@ app.get("/", (req, res) => {
 // --------------------------------------------------
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
+});
+
+app.get("/auth", async (req, res) => {
+  const url = await getAuthUrl();
+  res.redirect(url);
+});
+
+// Step 2 — handle callback from Google
+app.get("/oauth2callback", async (req, res) => {
+  const code = req.query.code;
+  const success = await getAccessToken(code);
+  if (success) res.send("✅ Authorization successful! You can close this tab now and try your API call again.");
+  else res.send("❌ Authorization failed. Check your console for details.");
 });
