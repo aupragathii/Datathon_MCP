@@ -11,9 +11,24 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.927.0",
+    "@aws-sdk/client-ec2": "^3.927.0",
+    "@aws-sdk/client-ecs": "^3.927.0",
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "openai": "^6.8.1"
-  }
+    "googleapis": "^126.0.1",
+    "octokit": "^5.0.5",
+    "open": "^10.2.0",
+    "openai": "^6.8.1",
+    "string-similarity": "^4.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aupragathii/Datathon_MCP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aupragathii/Datathon_MCP/issues"
+  },
+  "homepage": "https://github.com/aupragathii/Datathon_MCP#readme"
 }
