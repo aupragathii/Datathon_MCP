@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import OpenAI from "openai";
 import fs from "fs";
 import { getAuthUrl, getAccessToken, authorize, getUpcomingEvents } from "./googleCalendarHelper.js";
+import { handleGitHubQuery} from "./githubHelper.js";
 
 
 dotenv.config();
@@ -120,6 +121,10 @@ async function fetchConnector(connector, user_id, query, timeHint) {
         summary: `Upcoming meetings: ${eventSummary}`,
       };
     }
+    else if (connector === "github_repo") {
+    const githubSummary = await handleGitHubQuery(query);
+        return { connector, summary: githubSummary };
+  }
 
     // Default simulated responses for other connectors
     const data = {
